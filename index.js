@@ -23,7 +23,12 @@ app.use('/api/match', require('./routes/match'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/admin', require('./routes/admin'));
 
-// Serve index.html for any unknown route
+// Explicitly serve index.html for the root URL
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Serve index.html for any unknown route (SPA support)
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
