@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blood Donation - Sign Up</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://ai-public.creatie.ai/gen_page/tailwind-custom.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.5?plugins=forms@0.5.7,typography@0.5.13,aspect-ratio@0.4.2,container-queries@0.1.1"></script>
+    <script
+      src="https://ai-public.creatie.ai/gen_page/tailwind-config.min.js"
+      data-color="#A81B1B"
+      data-border-radius="small"
+    ></script>
+    <style>
+      #signup-form {
+        display: none;
+      }
+      #signup-form:target {
+        display: block;
+      }
+      #signup-form:target ~ #login-form {
+        display: none;
+      }
+      .form-container {
+        transition: all 0.3s ease;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="min-h-screen bg-gray-50 flex flex-col">
+    <div class="flex min-h-screen">
+      <div class="hidden lg:block relative w-0 flex-1">
+        <img
+          class="absolute inset-0 h-full w-full object-cover"
+          src="log_img.jpg"
+          alt="Blood donation"
+        />
+      </div>
+      <div
+        class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+      >
+        <div class="mx-auto w-full max-w-sm lg:w-96">
+          <div class="mb-10">
+            <img class="h-30 w-auto" src="logo.png" alt="Logo" />
+            <h2 class="mt-6 text-3xl font-bold text-gray-900">
+              Join Us in Saving Lives
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+              Every donation makes a difference
+            </p>
+          </div>
+
+          <div id="signup-form" class="form-container">
+            <form id="signupForm" class="space-y-6">
+              <div>
+                <label for="s_name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <div class="mt-1">
+                  <input
+                    id="s_name"
+                    name="s_name"
+                    type="text"
+                    required
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom focus:border-custom sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="s_email" class="block text-sm font-medium text-gray-700">Email address</label>
+                <div class="mt-1">
+                  <input
+                    id="s_email"
+                    name="s_email"
+                    type="email"
+                    required
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom focus:border-custom sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="s_password" class="block text-sm font-medium text-gray-700">Password</label>
+                <div class="mt-1">
+                  <input
+                    id="s_password"
+                    name="s_password"
+                    type="password"
+                    required
+                    minlength="8"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom focus:border-custom sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-custom hover:bg-custom focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom"
+                >Sign Up</button>
+              </div>
+            </form>
+            <p class="mt-6 text-center text-sm text-gray-600">
+              Already have an account?
+              <a href="#login-form" class="font-medium text-custom hover:text-custom">
+                Login
+              </a>
+            </p>
+          </div>
+
+          <div id="login-form" class="form-container">
+            <form id="loginForm" class="space-y-6">
+              <div>
+                <label for="l_email" class="block text-sm font-medium text-gray-700">Email address</label>
+                <div class="mt-1">
+                  <input
+                    id="l_email"
+                    name="l_email"
+                    type="email"
+                    required
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom focus:border-custom sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="l_password" class="block text-sm font-medium text-gray-700">Password</label>
+                <div class="mt-1">
+                  <input
+                    id="l_password"
+                    name="l_password"
+                    type="password"
+                    required
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom focus:border-custom sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-custom hover:bg-custom focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom"
+                >Login</button>
+              </div>
+            </form>
+            <p class="mt-6 text-center text-sm text-gray-600">
+              Don't have an account?
+              <a href="#signup-form" class="font-medium text-custom hover:text-custom">
+                Sign up
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // If user is already logged in, redirect to index
+        if (localStorage.getItem('token')) {
+            window.location.replace('index.html');
+            return;
+        }
+
+        // SIGNUP form handler
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name     = document.getElementById('s_name').value.trim();
+            const email    = document.getElementById('s_email').value.trim();
+            const password = document.getElementById('s_password').value;
+
+            try {
+                const res = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const result = await res.json();
+
+                if (result.status === 'success') {
+                    Swal.fire({
+                        title: 'Account Created!',
+                        text: result.message,
+                        icon: 'success',
+                        confirmButtonColor: '#A81B1B',
+                        confirmButtonText: 'Login Now'
+                    }).then(() => {
+                        window.location.hash = '#login-form';
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Signup Failed',
+                        text: result.message,
+                        icon: 'error',
+                        confirmButtonColor: '#A81B1B',
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Network error. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#A81B1B'
+                });
+            }
+        });
+
+        // LOGIN form handler
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email    = document.getElementById('l_email').value.trim();
+            const password = document.getElementById('l_password').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const result = await res.json();
+
+                if (result.status === 'success') {
+                    localStorage.setItem('token',    result.token);
+                    localStorage.setItem('userData', JSON.stringify(result.user));
+                    window.location.href = 'index.html';
+                } else {
+                    Swal.fire({
+                        title: 'Login Failed',
+                        text: result.message,
+                        icon: 'error',
+                        confirmButtonColor: '#A81B1B',
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Network error. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#A81B1B'
+                });
+            }
+        });
+    });
+  </script>
+</html>

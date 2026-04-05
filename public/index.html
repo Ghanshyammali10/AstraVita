@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AstraVita connects nearby blood donors with those in urgent need using AI technology—fast, reliable, and life-saving. Join us to make a difference.">
+
+    <title>Blood Donation & Matching System</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://ai-public.creatie.ai/gen_page/tailwind-custom.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.5?plugins=forms@0.5.7,typography@0.5.13,aspect-ratio@0.4.2,container-queries@0.1.1"></script>
+    <script
+      src="https://ai-public.creatie.ai/gen_page/tailwind-config.min.js"
+      data-color="#A81B1B"
+      data-border-radius="small"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-gray-50 font-sans">
+    <nav class="fixed w-full z-50" id="navbar">
+      <!-- Navbar background that changes on scroll -->
+      <div
+        class="absolute inset-0 transition-all duration-300"
+        id="navbar-bg"
+      ></div>
+      <div class="relative max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0 flex items-center">
+              <a href="index.html" class="flex items-center">
+                <img class="h-11 w-auto" src="logo.png" alt="AstraVita" />
+              </a>
+            </div>
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <a href="index.html" class="text-white border-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Home</a>
+              <a href="recipient.html" class="auth-required text-white border-transparent hover:border-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Find Blood Match</a>
+              <a href="donor.html" class="auth-required text-white border-transparent hover:border-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Donor Registration</a>
+              <a href="about.html" class="text-white border-transparent hover:border-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">About Us</a>
+              <a href="event.html" class="text-white border-transparent hover:border-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Events</a>
+              <a href="admin.html" class="admin-only text-white border-transparent hover:border-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" style="display: none">Admin</a>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="flex items-center">
+              <!-- Account Section -->
+              <div id="account-section" class="hidden relative ml-3">
+                <button
+                  id="account-button"
+                  class="flex items-center justify-center w-8 h-8 rounded-full bg-custom hover:bg-custom/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom transition-all duration-200 ease-in-out"
+                >
+                  <i class="fas fa-user text-sm text-white"></i>
+                </button>
+                <div
+                  id="user-dropdown"
+                  class="hidden origin-top-right absolute right-0 mt-3 w-80 rounded-xl shadow-xl py-2 bg-white ring-1 ring-black ring-opacity-5 transform transition-all duration-200 ease-out"
+                >
+                  <div
+                    class="px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-xl"
+                  >
+                    <div class="flex items-center space-x-4">
+                      <div
+                        class="bg-custom rounded-full p-1.5 w-8 h-8 flex items-center justify-center"
+                      >
+                        <i class="fas fa-user text-sm text-white"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p
+                          class="text-lg font-semibold text-gray-900 truncate"
+                          id="user-name"
+                        ></p>
+                        <p
+                          class="text-sm text-gray-500 truncate"
+                          id="user-email"
+                        ></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="px-4 py-3">
+                    <div class="space-y-2">
+                      <button
+                        id="logout-button"
+                        class="flex items-center w-full px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 group"
+                      >
+                        <i
+                          class="fas fa-sign-out-alt text-red-400 mr-3 w-5 group-hover:text-red-600 transition-colors duration-200"
+                        ></i>
+                        <span class="group-hover:text-red-700">Sign out</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Login Button -->
+              <a
+                href="log.html"
+                id="login-button"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-custom hover:bg-custom focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom"
+                style="display: block"
+              >
+                Login / Sign Up
+              </a>
+            </div>
+          </div>
+          <div class="sm:hidden flex items-center">
+            <button
+              id="hamburger-button"
+              type="button"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-custom"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile menu -->
+      <div
+        class="sm:hidden hidden"
+        id="mobile-menu"
+        style="
+          position: absolute;
+          top: 64px;
+          right: 0;
+          width: 50vw;
+          z-index: 9999;
+          background: #fff;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        "
+      >
+        <div class="pt-2 pb-3 space-y-1">
+          <a
+            href="index.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent"
+            >Home</a
+          >
+          <a
+            href="recipient.html"    
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent auth-required"
+            >Find Blood Match</a
+          >
+          <a
+            href="donor.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent auth-required"
+            >Donor Registration</a
+          >
+          <a
+            href="about.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent"
+            >About Us</a
+          >
+          <a
+            href="event.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent"
+            >Events</a
+          >
+          <a
+            href="admin.html"
+            class="admin-only text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent"
+            style="display: none"
+            >Admin</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="relative overflow-hidden min-h-screen flex items-center">
+        <!-- Background Video -->
+        <video
+          autoplay
+          muted
+          loop
+          class="absolute top-0 left-0 min-h-screen w-full object-cover -z-10"
+          style="margin-top: 0"
+        >
+          <source src="hero.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+
+        <!-- Overlay to make text more readable -->
+        <div
+          class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 -z-10"
+        ></div>
+
+        <!-- Content -->
+        <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-16">
+          <div class="text-center">
+            <h1
+              class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl"
+            >
+              <span class="block">Save Lives Through</span>
+              <span class="block text-red-500">Blood Donation</span>
+            </h1>
+            <p
+              class="mt-3 max-w-md mx-auto text-base text-white sm:text-lg md:mt-5 md:text-xl md:max-w-3xl"
+            >
+              Join our mission to help those in need. Every drop counts in
+              making a difference.
+            </p>
+            <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+              <a
+                href="donor.html"
+                class="w-full flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white bg-transparent shadow hover:bg-white hover:text-black transition-all duration-200 md:py-4 md:text-lg md:px-10"
+              >
+                Become a Donor
+              </a>
+              <a
+                href="recipient.html"
+                class="mt-3 sm:mt-0 sm:ml-3 w-full flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white bg-transparent shadow hover:bg-white hover:text-black transition-all duration-200 md:py-4 md:text-lg md:px-10"
+              >
+                Find Blood Match
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-12 bg-gray-50">
+        <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12">
+            Available Blood Types
+          </h2>
+          <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+            <div
+              class="bg-white overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 !rounded-button border border-gray-200"
+            >
+              <div class="p-6">
+                <div class="flex items-center">
+                  <div
+                    class="flex-shrink-0 h-12 w-12 bg-custom/10 rounded-full flex items-center justify-center"
+                  >
+                    <span class="text-custom text-xl font-bold">A+</span>
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900">Available</h3>
+                    <p class="text-sm text-gray-500">12 units</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 !rounded-button border border-gray-200"
+            >
+              <div class="p-6">
+                <div class="flex items-center">
+                  <div
+                    class="flex-shrink-0 h-12 w-12 bg-custom/10 rounded-full flex items-center justify-center"
+                  >
+                    <span class="text-custom text-xl font-bold">B+</span>
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900">Limited</h3>
+                    <p class="text-sm text-gray-500">5 units</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 !rounded-button border border-gray-200"
+            >
+              <div class="p-6">
+                <div class="flex items-center">
+                  <div
+                    class="flex-shrink-0 h-12 w-12 bg-custom/10 rounded-full flex items-center justify-center"
+                  >
+                    <span class="text-custom text-xl font-bold">O+</span>
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900">Urgent</h3>
+                    <p class="text-sm text-gray-500">2 units</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 !rounded-button border border-gray-200"
+            >
+              <div class="p-6">
+                <div class="flex items-center">
+                  <div
+                    class="flex-shrink-0 h-12 w-12 bg-custom/10 rounded-full flex items-center justify-center"
+                  >
+                    <span class="text-custom text-xl font-bold">AB+</span>
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900">Available</h3>
+                    <p class="text-sm text-gray-500">8 units</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-12 bg-white">
+        <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
+            <div>
+              <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                Emergency Blood Request
+              </h2>
+              <p class="mt-3 max-w-3xl text-lg text-gray-500">
+                Need blood urgently? Fill out this quick form and we'll connect
+                you with available donors immediately.
+              </p>
+              <div id="emergency-form-container">
+                <div
+                  id="login-message"
+                  class="hidden mt-4 p-4 bg-yellow-50 rounded-md"
+                >
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <i class="fas fa-exclamation-circle text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                      <h3 class="text-sm font-medium text-yellow-800">
+                        Authentication Required
+                      </h3>
+                      <div class="mt-2 text-sm text-yellow-700">
+                        <p>
+                          Please log in to submit an emergency blood request.
+                          This helps us verify and process your request quickly.
+                        </p>
+                      </div>
+                      <div class="mt-4">
+                        <div class="flex space-x-4">
+                          <a
+                            href="log.html"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-custom hover:bg-custom focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom"
+                          >
+                            Login Now
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <form id="emergency-request-form" class="mt-4 space-y-4">
+                  <div
+                    class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8"
+                  >
+                    <div>
+                      <label
+                        for="patient-name"
+                        class="block text-sm font-medium text-gray-700"
+                        >Patient Name</label
+                      >
+                      <div class="mt-1">
+                        <input
+                          type="text"
+                          name="patient-name"
+                          id="patient-name"
+                          class="shadow-sm hover:shadow focus:ring-custom focus:border-custom block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label
+                        for="blood-type"
+                        class="block text-sm font-medium text-gray-700"
+                        >Blood Type</label
+                      >
+                      <div class="mt-1">
+                        <select
+                          id="blood-type"
+                          name="blood-type"
+                          class="shadow-sm hover:shadow focus:ring-custom focus:border-custom block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200"
+                        >
+                          <option value="">Select type</option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="sm:col-span-2">
+                      <label
+                        for="hospital"
+                        class="block text-sm font-medium text-gray-700"
+                        >Hospital Name & Location</label
+                      >
+                      <div class="mt-1">
+                        <input
+                          type="text"
+                          name="hospital"
+                          id="hospital"
+                          class="shadow-sm hover:shadow focus:ring-custom focus:border-custom block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200"
+                        />
+                      </div>
+                    </div>
+                    <div class="sm:col-span-2">
+                      <label
+                        for="contact"
+                        class="block text-sm font-medium text-gray-700"
+                        >Emergency Contact</label
+                      >
+                      <div class="mt-1">
+                        <input
+                          type="tel"
+                          name="contact"
+                          id="contact"
+                          class="shadow-sm hover:shadow focus:ring-custom focus:border-custom block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <button
+                      type="submit"
+                      class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm hover:shadow text-sm font-medium text-white bg-custom hover:bg-custom/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom transition-all duration-200"
+                    >
+                      Submit Emergency Request
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="mt-10 lg:mt-0">
+              <div class="bg-gray-50 overflow-hidden shadow !rounded-button">
+                <div class="px-4 py-5 sm:p-6">
+                  <h3 class="text-lg font-medium leading-6 text-gray-900">
+                    Statistics
+                  </h3>
+                  <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <div
+                      class="bg-white overflow-hidden shadow !rounded-button px-4 py-5 sm:p-6"
+                    >
+                      <dt class="text-sm font-medium text-gray-500 truncate">
+                        Total Donors
+                      </dt>
+                      <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                        1,234
+                      </dd>
+                    </div>
+                    <div
+                      class="bg-white overflow-hidden shadow !rounded-button px-4 py-5 sm:p-6"
+                    >
+                      <dt class="text-sm font-medium text-gray-500 truncate">
+                        Successful Matches
+                      </dt>
+                      <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                        856
+                      </dd>
+                    </div>
+                    <div
+                      class="bg-white overflow-hidden shadow !rounded-button px-4 py-5 sm:p-6"
+                    >
+                      <dt class="text-sm font-medium text-gray-500 truncate">
+                        Lives Saved
+                      </dt>
+                      <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                        2,467
+                      </dd>
+                    </div>
+                    <div
+                      class="bg-white overflow-hidden shadow !rounded-button px-4 py-5 sm:p-6"
+                    >
+                      <dt class="text-sm font-medium text-gray-500 truncate">
+                        Active Requests
+                      </dt>
+                      <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                        23
+                      </dd>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-12 bg-gray-50">
+        <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              How It Works
+            </h2>
+            <p class="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
+              Simple steps to save lives through blood donation
+            </p>
+          </div>
+          <div class="mt-12 grid gap-8 lg:grid-cols-3">
+            <div class="bg-white overflow-hidden shadow !rounded-button">
+              <div class="p-6">
+                <div
+                  class="flex items-center justify-center h-12 w-12 rounded-md bg-custom text-white"
+                >
+                  <i class="fas fa-user-plus text-xl"></i>
+                </div>
+                <h3 class="mt-5 text-lg font-medium text-gray-900">Register</h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Create your account as a donor or recipient. Provide necessary
+                  details and medical history.
+                </p>
+              </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow !rounded-button">
+              <div class="p-6">
+                <div
+                  class="flex items-center justify-center h-12 w-12 rounded-md bg-custom text-white"
+                >
+                  <i class="fas fa-search text-xl"></i>
+                </div>
+                <h3 class="mt-5 text-lg font-medium text-gray-900">Match</h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Our system automatically matches compatible donors with
+                  recipients based on blood type and location.
+                </p>
+              </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow !rounded-button">
+              <div class="p-6">
+                <div
+                  class="flex items-center justify-center h-12 w-12 rounded-md bg-custom text-white"
+                >
+                  <i class="fas fa-heart text-xl"></i>
+                </div>
+                <h3 class="mt-5 text-lg font-medium text-gray-900">Donate</h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Connect with the matched recipient and coordinate the donation
+                  at a nearby hospital or blood bank.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="bg-gray-100">
+        <div class="max-w-8xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-8">
+              <img class="h-20" src="logo.png" alt="AstraVita" />
+              <p class="text-gray-500 text-base">
+                Connecting donors with recipients to save lives through blood
+                donation.
+              </p>
+              <div class="flex space-x-6">
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <i class="fab fa-facebook text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <i class="fab fa-twitter text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <i class="fab fa-instagram text-xl"></i>
+                </a>
+              </div>
+            </div>
+            <div>
+              <h3
+                class="text-sm font-semibold text-gray-400 tracking-wider uppercase"
+              >
+                Quick Links
+              </h3>
+              <ul class="mt-4 space-y-4">
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Home</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >About Us</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Contact</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >FAQ</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3
+                class="text-sm font-semibold text-gray-400 tracking-wider uppercase"
+              >
+                Resources
+              </h3>
+              <ul class="mt-4 space-y-4">
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Donor Guidelines</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Blood Types</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Privacy Policy</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Terms of Service</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3
+                class="text-sm font-semibold text-gray-400 tracking-wider uppercase"
+              >
+                Emergency Contact
+              </h3>
+              <ul class="mt-4 space-y-4">
+                <li class="flex">
+                  <i class="fas fa-phone text-custom mr-3"></i>
+                  <span class="text-base text-gray-500"
+                    >24/7 Hotline: 1-800-BLOOD-HELP</span
+                  >
+                </li>
+                <li class="flex">
+                  <i class="fas fa-envelope text-custom mr-3"></i>
+                  <span class="text-base text-gray-500"
+                    >emergency@bloodmatch.com</span
+                  >
+                </li>
+                <li class="flex">
+                  <i class="fas fa-map-marker-alt text-custom mr-3"></i>
+                  <span class="text-base text-gray-500"
+                    >123 Medical Center Ave, City, State 12345</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-12 border-t border-gray-200 pt-8">
+            <p class="text-base text-gray-400 text-center">
+              &copy; 2024 AstraVita. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+<script>
+  
+class BloodDonationApp {
+  constructor() {
+    this.elements = {};
+    this.state = {
+      isLoggedIn: false,
+      isAdmin: false,
+      userData: null,
+      mobileMenuOpen: false
+    };
+    
+    this.init();
+  }
+
+  // Initialize the application
+  init() {
+    this.cacheElements();
+    this.bindEvents();
+    this.updateAuthState();
+    this.setupNavbarScroll();
+  }
+
+  // Cache DOM elements for better performance
+  cacheElements() {
+    this.elements = {
+      // Navigation elements
+      navbar: document.getElementById('navbar'),
+      navbarBg: document.getElementById('navbar-bg'),
+      hamburgerButton: document.getElementById('hamburger-button'),
+      mobileMenu: document.getElementById('mobile-menu'),
+      
+      // Auth elements
+      loginButton: document.getElementById('login-button'),
+      accountSection: document.getElementById('account-section'),
+      accountButton: document.getElementById('account-button'),
+      userDropdown: document.getElementById('user-dropdown'),
+      logoutButton: document.getElementById('logout-button'),
+      userName: document.getElementById('user-name'),
+      userEmail: document.getElementById('user-email'),
+      
+      // Form elements
+      emergencyForm: document.getElementById('emergency-request-form'),
+      loginMessage: document.getElementById('login-message'),
+      
+      // Auth required links
+      authLinks: document.querySelectorAll('.auth-required'),
+      adminLinks: document.querySelectorAll('.admin-only')
+    };
+  }
+
+  // Bind all event listeners
+  bindEvents() {
+    // Mobile menu toggle
+    if (this.elements.hamburgerButton) {
+      this.elements.hamburgerButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.toggleMobileMenu();
+      });
+    }
+
+    // Account dropdown toggle
+    if (this.elements.accountButton) {
+      this.elements.accountButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.toggleUserDropdown();
+      });
+    }
+
+    // Logout functionality
+    if (this.elements.logoutButton) {
+      this.elements.logoutButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.logout();
+      });
+    }
+
+    // Emergency form submission
+    if (this.elements.emergencyForm) {
+      this.elements.emergencyForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleEmergencyRequest();
+      });
+    }
+
+    // Click outside to close dropdowns
+    document.addEventListener('click', (e) => {
+      this.handleOutsideClick(e);
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      this.handleNavbarScroll();
+    });
+
+    // Auth required links
+    this.setupAuthRequiredLinks();
+  }
+
+  // Mobile menu functionality
+  toggleMobileMenu() {
+    if (!this.elements.mobileMenu) return;
+
+    const isHidden = this.elements.mobileMenu.classList.contains('hidden');
+    const hamburgerIcon = this.elements.hamburgerButton?.querySelector('i');
+
+    if (isHidden) {
+      this.elements.mobileMenu.classList.remove('hidden');
+      if (hamburgerIcon) {
+        hamburgerIcon.classList.remove('fa-bars');
+        hamburgerIcon.classList.add('fa-times');
+      }
+      this.state.mobileMenuOpen = true;
+    } else {
+      this.elements.mobileMenu.classList.add('hidden');
+      if (hamburgerIcon) {
+        hamburgerIcon.classList.remove('fa-times');
+        hamburgerIcon.classList.add('fa-bars');
+      }
+      this.state.mobileMenuOpen = false;
+    }
+  }
+
+  // User dropdown functionality
+  toggleUserDropdown() {
+    if (!this.elements.userDropdown) return;
+    this.elements.userDropdown.classList.toggle('hidden');
+  }
+
+  // Handle clicks outside dropdowns
+  handleOutsideClick(event) {
+    // Close mobile menu if clicking outside
+    if (this.state.mobileMenuOpen && 
+        this.elements.hamburgerButton && 
+        this.elements.mobileMenu &&
+        !this.elements.hamburgerButton.contains(event.target) &&
+        !this.elements.mobileMenu.contains(event.target)) {
+      this.toggleMobileMenu();
+    }
+
+    // Close user dropdown if clicking outside
+    if (this.elements.accountButton && 
+        this.elements.userDropdown &&
+        !this.elements.accountButton.contains(event.target) &&
+        !this.elements.userDropdown.contains(event.target)) {
+      this.elements.userDropdown.classList.add('hidden');
+    }
+  }
+
+  // Update authentication state from local storage
+  updateAuthState() {
+    this.state.isLoggedIn = !!localStorage.getItem('token');
+    
+    try {
+      this.state.userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      this.state.isAdmin = this.state.userData && this.state.userData.role === 'admin';
+    } catch (e) {
+      console.error('Error parsing user data:', e);
+      this.state.userData = {};
+      this.state.isAdmin = false;
+    }
+    
+    this.updateUIBasedOnAuth();
+  }
+
+  updateUIBasedOnAuth() {
+    // Toggle login button visibility
+    if (this.elements.loginButton) {
+      this.elements.loginButton.style.display = this.state.isLoggedIn ? 'none' : 'block';
+    }
+
+    // Toggle account section visibility
+    if (this.elements.accountSection) {
+      this.elements.accountSection.style.display = this.state.isLoggedIn ? 'block' : 'none';
+      
+      // Update user info in dropdown
+      if (this.state.isLoggedIn && this.state.userData) {
+        if (this.elements.userName) {
+          this.elements.userName.textContent = this.state.userData.name || '';
+        }
+        if (this.elements.userEmail) {
+          this.elements.userEmail.textContent = this.state.userData.email || '';
+        }
+      }
+    }
+
+    // Update emergency form visibility
+    this.updateEmergencyFormVisibility();
+
+    // Update admin links
+    this.elements.adminLinks.forEach(link => {
+      link.style.display = this.state.isAdmin ? '' : 'none';
+    });
+  }
+
+  // Setup auth required links
+  setupAuthRequiredLinks() {
+    this.elements.authLinks.forEach(link => {
+      // Remove any existing event listeners by cloning the element
+      const newLink = link.cloneNode(true);
+      link.parentNode.replaceChild(newLink, link);
+      
+      newLink.addEventListener('click', (e) => {
+        if (!this.state.isLoggedIn) {
+          e.preventDefault();
+          Swal.fire({
+            title: "Authentication Required",
+            text: "Please log in to access this feature",
+            icon: "warning",
+            confirmButtonColor: "#A81B1B",
+            confirmButtonText: "Login",
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = "log.html";
+            }
+          });
+        }
+      });
+    });
+    
+    // Update the cached elements after cloning
+    this.elements.authLinks = document.querySelectorAll('.auth-required');
+  }
+
+  // Emergency form management
+  updateEmergencyFormVisibility() {
+    if (this.elements.emergencyForm && this.elements.loginMessage) {
+      if (this.state.isLoggedIn) {
+        this.elements.emergencyForm.classList.remove('hidden');
+        this.elements.loginMessage.classList.add('hidden');
+      } else {
+        this.elements.emergencyForm.classList.add('hidden');
+        this.elements.loginMessage.classList.remove('hidden');
+      }
+    }
+  }
+
+  async handleEmergencyRequest() {
+    if (!this.state.isLoggedIn) {
+      this.showAlert('error', 'Please log in to submit an emergency request.');
+      return;
+    }
+
+    // Validate form fields
+    const name = document.getElementById('patient-name').value;
+    const blood_type = document.getElementById('blood-type').value;
+    const pin = document.getElementById('hospital').value; // Using hospital as location/pin
+    const email = document.getElementById('contact').value;
+
+    if (!name || !blood_type || !pin || !email) {
+      this.showAlert('error', 'Please fill in all required fields.');
+      return;
+    }
+
+    try {
+      Swal.showLoading();
+      const res = await fetch('/api/match/find', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ name, blood_type, pin, email })
+      });
+      const data = await res.json();
+      
+      if (data.status === 'success') {
+        const matchCount = data.donors ? data.donors.length : 0;
+        let message = 'We have received your emergency blood request. ';
+        if (matchCount > 0) {
+          message += `We found ${matchCount} potential donor(s) and have notified them via email.`;
+        } else {
+          message += 'No immediate matches found, but your request is saved and we will notify you once a donor registers.';
+        }
+
+        this.showAlert('success', 'Emergency Request Submitted', message).then(() => {
+          this.elements.emergencyForm.reset();
+          if (matchCount > 0) {
+            // Optionally redirect to matches page
+            window.location.href = `show_matches.html?blood_type=${encodeURIComponent(blood_type)}&location=${encodeURIComponent(pin)}`;
+          }
+        });
+      } else {
+        this.showAlert('error', 'Request Failed', data.message || 'Something went wrong.');
+      }
+    } catch (err) {
+      console.error('Emergency request error:', err);
+      this.showAlert('error', 'Network Error', 'Could not connect to the server.');
+    }
+  }
+
+  // Navbar scroll effect
+  setupNavbarScroll() {
+    // Initial check
+    this.handleNavbarScroll();
+  }
+
+  handleNavbarScroll() {
+    if (!this.elements.navbar || !this.elements.navbarBg) return;
+
+    const scrolled = window.scrollY > 0;
+    const navLinks = this.elements.navbar.getElementsByTagName('a');
+    const activeLink = this.elements.navbar.querySelector('a[href="index.html"]');
+    const mobileMenuLinks = this.elements.mobileMenu ? this.elements.mobileMenu.getElementsByTagName('a') : [];
+
+    if (scrolled) {
+      // Scrolled state - white background
+      this.elements.navbarBg.classList.add('bg-white', 'shadow-sm');
+      this.elements.navbarBg.classList.remove('bg-transparent');
+      
+      // Update main nav link colors (excluding mobile menu links)
+      Array.from(navLinks).forEach(link => {
+        // Skip links that are inside mobile menu
+        if (!this.elements.mobileMenu || !this.elements.mobileMenu.contains(link)) {
+          link.classList.remove('text-white', 'hover:text-white/80', 'border-white');
+          link.classList.add('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+        }
+      });
+      
+      // Update active link
+      if (activeLink && (!this.elements.mobileMenu || !this.elements.mobileMenu.contains(activeLink))) {
+        activeLink.classList.remove('text-white', 'border-white');
+        activeLink.classList.add('text-gray-900', 'border-custom');
+      }
+    } else {
+      // Top of page - transparent background
+      this.elements.navbarBg.classList.remove('bg-white', 'shadow-sm');
+      this.elements.navbarBg.classList.add('bg-transparent');
+      
+      // Update main nav link colors (excluding mobile menu links)
+      Array.from(navLinks).forEach(link => {
+        // Skip links that are inside mobile menu
+        if (!this.elements.mobileMenu || !this.elements.mobileMenu.contains(link)) {
+          link.classList.remove('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'text-gray-900', 'border-custom');
+          link.classList.add('text-white', 'hover:text-white/80');
+        }
+      });
+      
+      // Update active link
+      if (activeLink && (!this.elements.mobileMenu || !this.elements.mobileMenu.contains(activeLink))) {
+        activeLink.classList.add('border-white');
+      }
+    }
+
+    // Ensure mobile menu links always stay gray/black
+    Array.from(mobileMenuLinks).forEach(link => {
+      link.classList.remove('text-white', 'hover:text-white/80', 'border-white');
+      link.classList.add('text-gray-500', 'hover:text-gray-700');
+    });
+  }
+
+  // Logout functionality
+  logout() {
+    localStorage.clear();
+    this.state.isLoggedIn = false;
+    this.state.userData = null;
+    window.location.replace('index.html');
+  }
+
+  // Utility method for showing alerts
+  showAlert(type, title, text) {
+    if (typeof Swal !== 'undefined') {
+      return Swal.fire({
+        title: title,
+        text: text,
+        icon: type,
+        confirmButtonColor: '#A81B1B',
+        confirmButtonText: type === 'success' ? 'Understood' : 'OK'
+      });
+    } else {
+      // Fallback for when SweetAlert is not available
+      alert(`${title}: ${text || ''}`);
+      return Promise.resolve();
+    }
+  }
+
+  // Method to refresh auth state (useful for periodic checks)
+  refreshAuthState() {
+    this.updateAuthState();
+  }
+}
+
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  window.bloodDonationApp = new BloodDonationApp();
+  
+  // Optional: Refresh auth state periodically
+  setInterval(() => {
+    window.bloodDonationApp.refreshAuthState();
+  }, 5000); // Check every 5 seconds
+});
+
+// Export for potential use in other scripts
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = BloodDonationApp;
+}
+</script>
+  </body>
+</html>

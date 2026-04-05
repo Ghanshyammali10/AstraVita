@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blood Donation &amp; Matching System</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://ai-public.creatie.ai/gen_page/tailwind-custom.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.5?plugins=forms@0.5.7,typography@0.5.13,aspect-ratio@0.4.2,container-queries@0.1.1"></script>
+    <script
+      src="https://ai-public.creatie.ai/gen_page/tailwind-config.min.js"
+      data-color="#A81B1B"
+      data-border-radius="small"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // AUTH & ACCOUNT MANAGEMENT
+        const isLoggedIn = !!localStorage.getItem("token");
+        const authLinks = document.querySelectorAll(".auth-required");
+        const adminLinks = document.querySelectorAll(".admin-only");
+        const loginButton = document.querySelector("#login-button");
+        const accountSection = document.querySelector("#account-section");
+        const userDropdown = document.querySelector("#user-dropdown");
+        const accountButton = document.querySelector("#account-button");
+        const userName = document.querySelector("#user-name");
+        const userEmail = document.querySelector("#user-email");
+
+        // Page restriction
+        const userDataObj = JSON.parse(localStorage.getItem("userData") || "{}");
+        const isAdmin = isLoggedIn && userDataObj.role === 'admin';
+
+        if (!isAdmin) {
+          window.location.href = "index.html";
+        }
+
+        // Handle access for restricted items
+        authLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            if (!isLoggedIn) {
+              e.preventDefault();
+              Swal.fire({
+                title: "Authentication Required",
+                text: "Please log in to access this feature.",
+                icon: "warning",
+                confirmButtonColor: "#A81B1B",
+                confirmButtonText: "Login",
+                showCancelButton: true,
+                cancelButtonText: "Cancel",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = "log.html";
+                }
+              });
+            }
+          });
+        });
+
+        adminLinks.forEach((link) => {
+          link.style.display = isAdmin ? "" : "none";
+        });
+
+        function updateUserInterface() {
+          const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+          if (loginButton)
+            loginButton.style.display = isLoggedIn ? "none" : "block";
+          if (accountSection) {
+            accountSection.style.display = isLoggedIn ? "block" : "none";
+            if (isLoggedIn && userData) {
+              if (userName) userName.textContent = userData.name || "";
+              if (userEmail) userEmail.textContent = userData.email || "";
+            }
+          }
+        }
+
+        updateUserInterface();
+
+        if (accountButton) {
+          accountButton.addEventListener("click", () => {
+            userDropdown.classList.toggle("hidden");
+          });
+        }
+
+        document.addEventListener("click", (e) => {
+          if (
+            accountButton &&
+            userDropdown &&
+            !accountButton.contains(e.target) &&
+            !userDropdown.contains(e.target)
+          ) {
+            userDropdown.classList.add("hidden");
+          }
+        });
+
+        document
+          .querySelector("#logout-button")
+          ?.addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userData");
+            window.location.replace("index.html");
+          });
+
+        // HAMBURGER MENU
+        const hamburgerButton = document.querySelector("#hamburger-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const hamburgerIcon = hamburgerButton?.querySelector("i");
+
+        if (hamburgerButton && mobileMenu) {
+          hamburgerButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            const isHidden = mobileMenu.classList.contains("hidden");
+            mobileMenu.classList.toggle("hidden");
+            hamburgerIcon?.classList.toggle("fa-bars", !isHidden);
+            hamburgerIcon?.classList.toggle("fa-times", isHidden);
+          });
+        }
+
+        document.addEventListener("click", function (event) {
+          if (
+            hamburgerButton &&
+            mobileMenu &&
+            !hamburgerButton.contains(event.target) &&
+            !mobileMenu.contains(event.target) &&
+            !mobileMenu.classList.contains("hidden")
+          ) {
+            mobileMenu.classList.add("hidden");
+            hamburgerIcon?.classList.remove("fa-times");
+            hamburgerIcon?.classList.add("fa-bars");
+          }
+        });
+      });
+    </script>
+  </head>
+  <body class="bg-gray-50 font-sans">
+    <nav class="bg-white shadow-sm fixed w-full z-50">
+      <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0 flex items-center">
+              <a href="index.html" class="flex items-center">
+                <img class="h-11 w-auto" src="logo.png" alt="AstraVita" />
+              </a>
+            </div>
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <a href="index.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Home</a>
+              <a href="recipient.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium auth-required">Find Blood Match</a>
+              <a href="donor.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium auth-required">Donor Registration</a>
+              <a href="about.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">About Us</a>
+              <a href="event.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Events</a>
+              <a href="admin.html" class="admin-only border-custom text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" style="display: none">Admin</a>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <a
+              href="log.html"
+              id="login-button"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-custom hover:bg-custom focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom"
+              style="display: block"
+            >
+              Login / Sign Up
+            </a>
+            <div id="account-section" class="hidden relative ml-3">
+              <button
+                id="account-button"
+                class="flex items-center justify-center w-8 h-8 rounded-full bg-custom hover:bg-custom/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom transition-all duration-200 ease-in-out"
+              >
+                <i class="fas fa-user text-sm text-white"></i>
+              </button>
+              <div
+                id="user-dropdown"
+                class="hidden origin-top-right absolute right-0 mt-3 w-80 rounded-xl shadow-xl py-2 bg-white ring-1 ring-black ring-opacity-5 transform transition-all duration-200 ease-out"
+              >
+                <div
+                  class="px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-xl"
+                >
+                  <div class="flex items-center space-x-4">
+                    <div
+                      class="bg-custom rounded-full p-1.5 w-8 h-8 flex items-center justify-center"
+                    >
+                      <i class="fas fa-user text-sm text-white"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p
+                        class="text-lg font-semibold text-gray-900 truncate"
+                        id="user-name"
+                      ></p>
+                      <p
+                        class="text-sm text-gray-500 truncate"
+                        id="user-email"
+                      ></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-4 py-3">
+                  <div class="space-y-2">
+                    <a
+                      href="#"
+                      class="flex items-center px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 group"
+                    >
+                      <i
+                        class="fas fa-user-cog text-gray-400 mr-3 w-5 group-hover:text-custom transition-colors duration-200"
+                      ></i>
+                      <span class="group-hover:text-gray-900"
+                        >Account Settings</span
+                      >
+                    </a>
+                    <a
+                      href="#"
+                      class="flex items-center px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 group"
+                    >
+                      <i
+                        class="fas fa-bell text-gray-400 mr-3 w-5 group-hover:text-custom transition-colors duration-200"
+                      ></i>
+                      <span class="group-hover:text-gray-900"
+                        >Notifications</span
+                      >
+                    </a>
+                    <div class="my-2 border-t border-gray-100"></div>
+                    <button
+                      id="logout-button"
+                      class="flex items-center w-full px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 group"
+                    >
+                      <i
+                        class="fas fa-sign-out-alt text-red-400 mr-3 w-5 group-hover:text-red-600 transition-colors duration-200"
+                      ></i>
+                      <span class="group-hover:text-red-700">Sign out</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sm:hidden flex items-center">
+            <button
+              id="hamburger-button"
+              type="button"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-custom"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile menu -->
+      <div
+        class="sm:hidden hidden"
+        id="mobile-menu"
+        style="
+          position: absolute;
+          top: 64px;
+          right: 0;
+          width: 50vw;
+          z-index: 9999;
+          background: #fff;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        "
+      >
+        <div class="pt-2 pb-3 space-y-1">
+          <a
+            href="index.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent"
+            >Home</a
+          >
+          <a
+            href="recipient.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent auth-required"
+            >Find Blood Match</a
+          >
+          <a
+            href="donor.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent auth-required"
+            >Donor Registration</a
+          >
+          <a
+            href="about.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent"
+            >About Us</a
+          >
+          <a
+            href="event.html"
+            class="text-gray-500 hover:bg-gray-50 block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent"
+            >Events</a
+          >
+          <a
+            href="admin.html"
+            class="admin-only text-gray-900 border-custom block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+            >Admin</a
+          >
+        </div>
+      </div>
+    </nav>
+    <main class="pt-16">
+      <section class="relative bg-white overflow-hidden">
+        <div class="max-w-8xl mx-auto">
+          <div
+            class="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-1/2 lg:pb-28 xl:pb-32"
+          >
+            <div
+              class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28"
+            >
+              <div class="sm:text-center lg:text-left">
+                <h1
+                  class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl"
+                >
+                  Admin Dashboard
+                </h1>
+                <p
+                  class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0"
+                >
+                  Monitor and manage blood donation data, donor records, and
+                  recipient information.
+                </p>
+                <div
+                  class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start"
+                >
+                  <a
+                    href="log.html"
+                    class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium !rounded-button text-white bg-custom shadow hover:bg-custom/90 transition-all duration-200 md:py-4 md:text-lg md:px-10"
+                  >
+                    Login to Manage
+                  </a>
+                  <div class="mt-3 sm:mt-0 sm:ml-3">
+                    <a
+                      href="#"
+                      class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium !rounded-button text-custom bg-custom/10 hover:bg-custom/20 md:py-4 md:text-lg md:px-10"
+                      >Export Data</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+          <img
+            class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
+            src="admin_pg_img.jpg"
+            alt="Hero"
+          />
+        </div>
+      </section>
+
+      <section class="py-12 bg-white">
+        <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <div
+              class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+            >
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                Total Donors
+              </h3>
+              <p class="text-3xl font-bold text-custom" id="stat-donors">...</p>
+              <p class="text-sm text-gray-500 mt-2">Verified donors in system</p>
+            </div>
+
+            <div
+              class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+            >
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                Total Requests
+              </h3>
+              <p class="text-3xl font-bold text-custom" id="stat-requests">...</p>
+              <p class="text-sm text-gray-500 mt-2">Active blood requests</p>
+            </div>
+
+            <div
+              class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+            >
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                Successful Matches
+              </h3>
+              <p class="text-3xl font-bold text-custom" id="stat-matched">...</p>
+              <p class="text-sm text-gray-500 mt-2">Matches notified via email</p>
+            </div>
+
+            <div
+              class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+            >
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                Total Events
+              </h3>
+              <p class="text-3xl font-bold text-custom" id="stat-events">...</p>
+              <p class="text-sm text-gray-500 mt-2">Scheduled donation events</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div
+            class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out"
+          >
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">
+              Recent Donors
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Donor Name
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Blood Type
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      City
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="donor-table-body">
+                   <!-- Dynamic Rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div
+            class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out"
+          >
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">
+              Recent Requests
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Recipient Name
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Blood Type
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Date
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="request-table-body">
+                    <!-- Dynamic Rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+          const token = localStorage.getItem('token');
+          if (!token) return;
+
+          const fetchOptions = {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          };
+
+          // Load Stats
+          try {
+            const statsRes = await fetch('/api/admin/stats', fetchOptions);
+            const statsData = await statsRes.json();
+            if (statsData.status === 'success') {
+              document.getElementById('stat-donors').textContent = statsData.donors;
+              document.getElementById('stat-requests').textContent = statsData.requests;
+              document.getElementById('stat-matched').textContent = statsData.matched;
+              document.getElementById('stat-events').textContent = statsData.events;
+            }
+          } catch (err) { console.error('Error fetching stats:', err); }
+
+          // Load Recent Donors
+          try {
+            const donorRes = await fetch('/api/admin/donors', fetchOptions);
+            const donorData = await donorRes.json();
+            if (donorData.status === 'success') {
+              const tbody = document.getElementById('donor-table-body');
+              tbody.innerHTML = donorData.donors.map(donor => `
+                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${donor.name}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${donor.blood_type}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${donor.do_center || '-'}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Verified</span>
+                  </td>
+                </tr>
+              `).join('');
+            }
+          } catch (err) { console.error('Error fetching donors:', err); }
+
+          // Load Recent Requests
+          try {
+            const reqRes = await fetch('/api/admin/requests', fetchOptions);
+            const reqData = await reqRes.json();
+            if (reqData.status === 'success') {
+              const tbody = document.getElementById('request-table-body');
+              tbody.innerHTML = reqData.requests.map(req => `
+                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${req.name}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${req.blood_type}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${new Date(req.createdAt).toLocaleDateString()}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${req.status === 'notified' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                      ${req.status === 'notified' ? 'Matched' : 'Pending'}
+                    </span>
+                  </td>
+                </tr>
+              `).join('');
+            }
+          } catch (err) { console.error('Error fetching requests:', err); }
+        });
+      </script>
+
+      <footer class="bg-gray-100">
+        <div class="max-w-8xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-8">
+              <img class="h-20" src="logo.png" alt="bloodlink" />
+              <p class="text-gray-500 text-base">
+                Connecting donors with recipients to save lives through blood
+                donation.
+              </p>
+              <div class="flex space-x-6">
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <i class="fab fa-facebook text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <i class="fab fa-twitter text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <i class="fab fa-instagram text-xl"></i>
+                </a>
+              </div>
+            </div>
+            <div>
+              <h3
+                class="text-sm font-semibold text-gray-400 tracking-wider uppercase"
+              >
+                Quick Links
+              </h3>
+              <ul class="mt-4 space-y-4">
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Home</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >About Us</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Contact</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >FAQ</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3
+                class="text-sm font-semibold text-gray-400 tracking-wider uppercase"
+              >
+                Resources
+              </h3>
+              <ul class="mt-4 space-y-4">
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Donor Guidelines</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Blood Types</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Privacy Policy</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-base text-gray-500 hover:text-gray-900"
+                    >Terms of Service</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3
+                class="text-sm font-semibold text-gray-400 tracking-wider uppercase"
+              >
+                Emergency Contact
+              </h3>
+              <ul class="mt-4 space-y-4">
+                <li class="flex">
+                  <i class="fas fa-phone text-custom mr-3"></i>
+                  <span class="text-base text-gray-500"
+                    >24/7 Hotline: 1-800-BLOOD-HELP</span
+                  >
+                </li>
+                <li class="flex">
+                  <i class="fas fa-envelope text-custom mr-3"></i>
+                  <span class="text-base text-gray-500"
+                    >emergency@bloodmatch.com</span
+                  >
+                </li>
+                <li class="flex">
+                  <i class="fas fa-map-marker-alt text-custom mr-3"></i>
+                  <span class="text-base text-gray-500"
+                    >123 Medical Center Ave, City, State 12345</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-12 border-t border-gray-200 pt-8">
+            <p class="text-base text-gray-400 text-center">
+              &copy; 2024 AstraVita. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </main>
+    <!-- <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileMenuButton = document.querySelector("button");
+        const nav = document.querySelector("nav");
+
+        mobileMenuButton.addEventListener("click", function () {
+          nav.classList.toggle("mobile-menu-open");
+        });
+      });
+    </script> -->
+  </body>
+</html>
